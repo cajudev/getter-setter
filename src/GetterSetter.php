@@ -7,7 +7,7 @@ use Cajudev\Exception\GetterSetterException;
 class GetterSetter {
 	private static $handlers = [];
 
-	public static function registry(string $name, array $handler) {
+	public static function register(string $name, array $handler) {
 		self::$handlers[$name] = array_change_key_case($handler, CASE_LOWER);
 	}
 

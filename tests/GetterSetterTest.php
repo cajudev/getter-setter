@@ -42,19 +42,19 @@ class GetterSetterTest extends TestCase {
 
 	public function test_should_throws_exception_when_get_registered_property_without_get_handler() {
 		self::expectException(GetterSetterException::class);
-		GetterSetter::registry('bool', []);
+		GetterSetter::register('bool', []);
 		$this->object->bool;
 	}
 
 	public function test_should_throws_exception_when_set_registered_property_without_set_handler() {
 		self::expectException(GetterSetterException::class);
-		GetterSetter::registry('bool', []);
+		GetterSetter::register('bool', []);
 		$this->object->bool = true;
 	}
 
 	public function test_should_throws_exception_when_registered_get_handler_is_not_callable() {
 		self::expectException(GetterSetterException::class);
-		GetterSetter::registry('bool', [
+		GetterSetter::register('bool', [
 			'get' => 'NOT CALLABLE'
 		]);
 		$this->object->bool;
@@ -62,14 +62,14 @@ class GetterSetterTest extends TestCase {
 
 	public function test_should_throws_exception_when_registered_set_handler_is_not_callable() {
 		self::expectException(GetterSetterException::class);
-		GetterSetter::registry('bool', [
+		GetterSetter::register('bool', [
 			'set' => 'NOT CALLABLE'
 		]);
 		$this->object->bool = true;
 	}
 
 	public function test_should_validate_property_when_register_correctly() {
-		GetterSetter::registry('bool', [
+		GetterSetter::register('bool', [
 			'get' => function($value) {
 				return $value;
 			},
@@ -82,7 +82,7 @@ class GetterSetterTest extends TestCase {
 	}
 
 	public function test_should_ignore_case_of_keys() {
-		GetterSetter::registry('bool', [
+		GetterSetter::register('bool', [
 			'GET' => function($value) {
 				return $value;
 			},
