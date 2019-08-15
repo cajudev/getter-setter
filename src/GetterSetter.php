@@ -2,13 +2,13 @@
 
 namespace Cajudev;
 
-use Cajudev\Exception\PropertyHandlerException;
+use Cajudev\Exception\GetterSetterException;
 
-class PropertyHandler {
+class GetterSetter {
 	private static $handlers = [];
 
 	public static function registry(string $name, array $handler) {
-		self::$handlers[$name] = $handler;
+		self::$handlers[$name] = array_change_key_case($handler, CASE_LOWER);
 	}
 
 	public static function get(\ReflectionProperty $property, $value) {
@@ -20,7 +20,7 @@ class PropertyHandler {
 	}
 
 	private static function exec(\ReflectionProperty $property, $value, string $action) {
-		$parser = new PropertyCommentParser($property->getDocComment());
+		$parser = new GetterSetterCommentParser($property->getDocComment());
 		$type   = $parser->parse();
 
 		if (is_null($type)) {
@@ -28,15 +28,15 @@ class PropertyHandler {
 		}
 
 		if (!isset(self::$handlers[$type])) {
-			throw new PropertyHandlerException("Handler [$type] wasn't registered");
+			throw new GetterSetterException("GetterSetter [$type] wasn't registered");
 		}
 
 		if (!isset(self::$handlers[$type][$action])) {
-			throw new PropertyHandlerException("{$action} method to handler [$type] wasn't registered");
+			throw new GetterSetterException("{$action} method to GetterSetter [$type] wasn't registered");
 		}
 
 		if (!is_callable(self::$handlers[$type][$action])) {
-			throw new PropertyHandlerException("{$action} method to handler [$type] must be a callable");
+			throw new GetterSetterException("{$action} method to GetterSetter [$type] must be a callable");
 		}
 
 		return self::$handlers[$type][$action]($value);
