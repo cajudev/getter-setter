@@ -19,4 +19,4 @@ Leia a documentação completa em: https://cajudev.readthedocs.io/pt_BR/latest/g
 
 ## Instalação
 
-``composer require cajudev/getter-setter "^1"``
+``composer require cajudev/getter-setter "^0"``
