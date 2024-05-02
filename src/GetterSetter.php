@@ -4,6 +4,7 @@ namespace Cajudev;
 
 use Cajudev\Exception\GetterSetterException;
 
+#[\Attribute]
 class GetterSetter {
 	private static $handlers = [];
 
@@ -20,8 +21,13 @@ class GetterSetter {
 	}
 
 	private static function exec(\ReflectionProperty $property, $value, string $action) {
-		$parser = new GetterSetterCommentParser($property->getDocComment());
-		$type   = $parser->parse();
+		$attribute = $property->getAttributes(GetterSetter::class)[0];
+
+		if (is_null($attribute)) {
+			return $value;
+		}
+
+		$type = $attribute->getArguments()[0];
 
 		if (is_null($type)) {
 			return $value;

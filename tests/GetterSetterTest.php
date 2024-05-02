@@ -5,17 +5,18 @@ namespace App;
 use PHPUnit\Framework\TestCase;
 
 use Cajudev\GetterSetter;
+use Cajudev\GetterSetterAccessor;
 use Cajudev\Exception\GetterSetterException;
 use Cajudev\Exception\GetterSetterAccessException;
 
 class GetterSetterTest extends TestCase {
-	private $class;
+	private $object;
 
-	public function setUp() {
+	public function setUp(): void {
 		$this->object = new class() {
-			use \Cajudev\GetterSetterAccessor;
-		
-			/** @GetterSetter(bool) */
+			use GetterSetterAccessor;
+
+			#[GetterSetter('boolean')]
 			private $bool;
 		};
 	}
@@ -42,19 +43,19 @@ class GetterSetterTest extends TestCase {
 
 	public function test_should_throws_exception_when_get_registered_property_without_get_handler() {
 		self::expectException(GetterSetterException::class);
-		GetterSetter::register('bool', []);
+		GetterSetter::register('boolean', []);
 		$this->object->bool;
 	}
 
 	public function test_should_throws_exception_when_set_registered_property_without_set_handler() {
 		self::expectException(GetterSetterException::class);
-		GetterSetter::register('bool', []);
+		GetterSetter::register('boolean', []);
 		$this->object->bool = true;
 	}
 
 	public function test_should_throws_exception_when_registered_get_handler_is_not_callable() {
 		self::expectException(GetterSetterException::class);
-		GetterSetter::register('bool', [
+		GetterSetter::register('boolean', [
 			'get' => 'NOT CALLABLE'
 		]);
 		$this->object->bool;
@@ -62,18 +63,18 @@ class GetterSetterTest extends TestCase {
 
 	public function test_should_throws_exception_when_registered_set_handler_is_not_callable() {
 		self::expectException(GetterSetterException::class);
-		GetterSetter::register('bool', [
+		GetterSetter::register('boolean', [
 			'set' => 'NOT CALLABLE'
 		]);
 		$this->object->bool = true;
 	}
 
 	public function test_should_validate_property_when_register_correctly() {
-		GetterSetter::register('bool', [
-			'get' => function($value) {
+		GetterSetter::register('boolean', [
+			'get' => function ($value) {
 				return $value;
 			},
-			'set' => function($value) {
+			'set' => function ($value) {
 				return filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
 			}
 		]);
@@ -82,11 +83,11 @@ class GetterSetterTest extends TestCase {
 	}
 
 	public function test_should_ignore_case_of_keys() {
-		GetterSetter::register('bool', [
-			'GET' => function($value) {
+		GetterSetter::register('boolean', [
+			'GET' => function ($value) {
 				return $value;
 			},
-			'Set' => function($value) {
+			'Set' => function ($value) {
 				return filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
 			}
 		]);
